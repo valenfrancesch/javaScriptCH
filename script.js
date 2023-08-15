@@ -1,73 +1,132 @@
-let todosDias = ["lunes", "martes", "miercoles", "jueves", "viernes", "sabado", "domingo"];
-
-function guardarTarea(txt, dia){
-    let tarea = {
-        tarea: txt,
-        dia: todosDias[dia-1],
-        diaNum: dia,
-    }
-    return tarea;
+let dias = {
+    lunes: 0,
+    martes: 1,
+    miercoles: 2,
+    jueves: 3,
+    viernes: 4,
+    sabado: 5,
+    domingo: 6,
 }
 
-function ingresarDia(){
-    let dia = parseInt(prompt("Escriba el número del día en el que quiere realizar la tarea: Lunes(1), Martes(2), Miércoles(3), Jueves(4), Viernes(5), Sábado(6), Domingo(7)"));
-    if(dia > 7 || dia < 1){
-        alert("Error. Escriba un número entre el 1 y el 7");
-        dia = ingresarDia();
-    }
-    return dia;
+let listaTareas = [[], [], [], [], [], [], []];
+let cont = 1;
+
+function crearElementoInput(contenedor){
+     //Creo el elemtno input
+     const ingresarTarea = document.createElement("input");
+     ingresarTarea.type = "text";
+     ingresarTarea.placeholder = "Ingrese una tarea";
+     contenedor.insertBefore(ingresarTarea, contenedor.firstChild);
+     ingresarTarea.focus();
+
+     return ingresarTarea;
+}
+function crearElementoEnviar(contenedor){
+     //Creo el boton enviar
+     const enviar = document.createElement("input");
+     enviar.type="submit";
+     enviar.name="submit";
+     enviar.value = ">";
+     contenedor.appendChild(enviar);
+
+     return enviar;
 }
 
-function ingresarTarea(){
-    let tarea= prompt("Escriba la tarea pendiente");
-    return tarea;
+function crearElementoTarea (tarea, contenedor){
+    //Creo texto de la tarea
+    const tareaDia = document.createElement("p");
+    tareaDia.innerHTML = tarea;
+    tareaDia.class = "tarea";
+    const contenedorDia = contenedor.previousElementSibling;
+    contenedorDia.appendChild(tareaDia);
+
+    return tareaDia;
 }
 
-function ingresoCaso(){
-    let verificador = parseInt(prompt("Escriba 1 si quiere ingresar una tarea. De lo contrario, escriba 2"));
-    if(verificador == 1){
-        return 1;
-    }else if(verificador == 2){
-        return 0;
-    }else{
-        alert("Error. Ingrese el número 1 o 2");
-        return -1;
-    }
-}
-
-function ordenarTareas(listaTareas){
-    listaTareas.sort((a, b) => (a.diaNum > b.diaNum) ? 1 : (a.diaNum < b.diaNum) ? -1 : 0);
-    return listaTareas;
-}
-
-function mostrarTareas(listaTareas){
-    let size = listaTareas.length;
-    if(size == 0){
-        console.log("No hay ninguna tarea");
+//Recuperar lo del local Storage
+function restaurarValores(){
+    let lista = localStorage.getItem("tareas");
+    if(!lista){
         return;
     }
 
-    let dia = 0;
-    for(let i=0; i<size; i++){
-        if (listaTareas[i].diaNum != dia){
-            if(dia != 0){
-                console.log("-----------------------");
+    listaTareas = JSON.parse(lista);
+    listaTareas.forEach(function (dia){
+        dia.forEach(function (obj){
+            let nombre = "#" + obj.dia;
+            let contenedor = document.querySelector(nombre).parentElement;
+            crearElementoTarea(obj.tarea, contenedor);
+        })
+    })
+
+    let conta = localStorage.getItem("contador");
+    if(!conta){
+        return;
+    }
+    cont = JSON.parse(conta);
+}
+
+function guardarLocal(){
+    let info = JSON.stringify(listaTareas);
+    localStorage.setItem("tareas", info);
+
+    let contador = JSON.stringify(cont);
+    localStorage.setItem("contador", contador);
+}
+
+function almacenar(tarea, id, elhtml){
+    let numero =  dias[id];
+    let obj = {
+        tarea: tarea,
+        dia: id,
+        num: numero,
+        id: cont,
+        elem: elhtml,
+    };
+
+    cont++; //para que cada tarea tenga un id unico 
+
+    listaTareas[numero].push(obj);
+
+    guardarLocal();
+}
+
+const agregarTareaBotones = document.querySelectorAll(".agregar-tarea");
+
+//Cuando apreto cada boton +
+agregarTareaBotones.forEach(function (boton) {
+    boton.addEventListener("click", function (e) {
+        let eventoId = e.target.id;
+        boton.style.display = 'none'; // que no se muestre el más
+        const diaContenido = boton.parentElement;
+
+        // Crear input y boton
+        const ingresarTarea = crearElementoInput(diaContenido);
+        const enviar = crearElementoEnviar(diaContenido);
+
+        //Para que cuando apreto enter se active enviar
+        ingresarTarea.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+              event.preventDefault();
+              enviar.click();
             }
-            console.log("Tareas del día " + listaTareas[i].dia);
-            dia = listaTareas[i].diaNum;
+        }); 
+
+        //Cuando envio la tarea: la guardo y agrego al html
+        enviar.addEventListener("click", function () {
+            const tarea = ingresarTarea.value;
+            const tareaDia = crearElementoTarea(tarea, diaContenido);
+            ingresarTarea.blur();
+            almacenar(tarea, eventoId, tareaDia);
+        });
+
+        //Cuando ya termine
+        ingresarTarea.onblur = function(){
+            diaContenido.removeChild(ingresarTarea);
+            diaContenido.removeChild(enviar);
+            boton.style.display = ''; 
         }
-        console.log("- " + listaTareas[i].tarea);
-    }
-}
+    });
+});
 
-let tareas = [];
-
-while (true){
-    verificador = ingresoCaso();
-    if(verificador == 1){
-        tareas.push(guardarTarea(ingresarTarea(), ingresarDia()));
-    }else if(verificador == 0){
-        mostrarTareas(ordenarTareas(tareas));
-        break;
-    }
-}
+restaurarValores();
