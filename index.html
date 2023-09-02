@@ -8,54 +8,57 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;600;900&family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+    <script src="./moment.js"></script>
+    <script src="./moment-with-locales.js"></script>
 </head>
 <body>
-    <h1>Organiza tu semana</h1>
+    <h1 id="titulo-pag">Organiza tu semana</h1>
+    <h2 id="dia-hoy"></h2>
     <div class="contenedor-semana">
         <div class="dia-semana lunes">
-            <h2>Lunes</h2>
+            <h2>Lunes <span class="fecha-dia"></span></h2>
             <div class="dia-contenido"></div>
             <div class="agregar-contenedor">
                 <button id="lunes" class="agregar-tarea">+</button>
             </div>
         </div>
         <div class="dia-semana martes">
-            <h2>Martes</h2>
+            <h2>Martes <span class="fecha-dia"></span></h2>
             <div class="dia-contenido"></div>
             <div class="agregar-contenedor">
                 <button id="martes" class="agregar-tarea">+</button>
             </div>
         </div>
         <div class="dia-semana miercoles">
-            <h2>Miércoles</h2>
+            <h2>Miércoles <span class="fecha-dia"></span></h2>
             <div class="dia-contenido"></div>
             <div class="agregar-contenedor">
                 <button id="miercoles" class="agregar-tarea">+</button>
             </div>
         </div>
         <div class="dia-semana jueves">
-            <h2>Jueves</h2>
+            <h2>Jueves <span class="fecha-dia"></span></h2>
             <div class="dia-contenido"></div>
             <div class="agregar-contenedor">
                 <button id="jueves" class="agregar-tarea">+</button>
             </div>
         </div>
         <div class="dia-semana viernes">
-            <h2>Viernes</h2>
+            <h2>Viernes <span class="fecha-dia"></span></h2>
             <div class="dia-contenido"></div>
             <div class="agregar-contenedor">
                 <button id="viernes" class="agregar-tarea">+</button>
             </div>
         </div>
         <div class="dia-semana sabado">
-            <h2>Sábado</h2>
+            <h2>Sábado <span class="fecha-dia"></span></h2>
             <div class="dia-contenido"></div>
             <div class="agregar-contenedor">
                 <button id="sabado" class="agregar-tarea">+</button>
             </div>
         </div>
         <div class="dia-semana domingo">
-            <h2>Domingo</h2>
+            <h2>Domingo <span class="fecha-dia"></span></h2>
             <div class="dia-contenido"></div>
             <div class="agregar-contenedor">
                 <button id="domingo" class="agregar-tarea">+</button>
